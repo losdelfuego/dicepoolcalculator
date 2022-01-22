@@ -44,3 +44,22 @@ function BinomTerm( p, n, k ) {
                     + k * Math.log(p)
                     + (n-k) * Math.log(1-p) );
   }
+
+function ChartUpdate( chart, numberOfDice, successRate) {
+
+    var outcomes = [];
+    for (var k = 0; k <= numberOfDice; k++) {
+        var prob = BinomTerm( successRate, numberOfDice, k )
+        outcomes.push([k, prob]);
+        console.log(k, prob);
+    }
+    var data = {
+                header: ["Outcome", "Probability"],
+                rows: outcomes
+    };
+
+
+    // add the data
+    chart.data(data);
+    chart.draw();
+}
