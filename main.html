@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JavaScript Bar Chart</title>
+        <script src="https://cdn.anychart.com/releases/8.0.0/js/anychart-base.min.js"></script>
+        <script src="functions.js"></script>
+    </head>
+    <body>
+        <div id="container" style="width: 100%; height: 100%"></div>
+        <script>
+            var slider = document.getElementById("myRange");
+            console.log("slider: ", slider);
+            var output = document.getElementById("demo");
+            output.innerHTML = slider.value; // Display the default slider value
+
+            // Update the current slider value (each time you drag the slider handle)
+            slider.oninput = function() {
+                output.innerHTML = this.value;
+            } 
+            anychart.onDocumentReady(function() {
+                
+                // set the data
+                var numberofdice = 8;
+                var outcomes = [];
+                var success_prob = 1/3;
+                console.log("success_prob: ", success_prob);
+
+                for (var k = 0; k <= numberofdice; k++) {
+                        outcomes.push([k, BinomTerm( success_prob, numberofdice, k )]);
+                }
+                var data = {
+                            header: ["Outcome", "Probability"],
+                            rows: outcomes
+                };
+
+                console.log("data: ", data);
+        
+                // create the chart
+                var chart = anychart.column();
+        
+                // add the data
+                chart.data(data);
+        
+                // set the chart title
+                chart.title("Dice outcomes");
+
+		// Add annotations
+		chart.labels(true);
+        
+                // draw
+                chart.container("container");
+                chart.draw();
+                });
+        </script>
+        <div class="slidecontainer">
+              <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+              <p>Value: <span id="demo"></span></p>
+        </div>
+    </body>
+</html>
