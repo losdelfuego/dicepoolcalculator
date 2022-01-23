@@ -65,27 +65,38 @@ function ChartUpdate( chart, numberOfDice, successRate) {
 }
 
 
-function NetHitsChartUpdate( chart, numberOfDice, numberOfOpposedDice, successRate) {
+function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successRate, maxNetHits) {
 
-    var outcomes = [];
-    for (var k = 0; k <= numberOfDice; k++) {
-        var prob = BinomTerm( successRate, numberOfDice, k )
-        outcomes.push([k, prob]);
+    var netHits = [];
+    // No net successes
+    var prob = 0.0;
+    for (var j = 0; j <= numberOfDice; j++) {
+        var myProb = BinomTerm( successRate, numberOfDice, j );
+        for (var k = 0; k <= numberOfOpposedDice; k++) {
+            if (j - k <= 0) {
+                var yourProb = BinomTerm( successRate, numberOfOpposedDice, k );
+                prob = prob + myProb * yourProb;
+            }
+        }
     }
-    var oppositionOutcomes = [];
-    for (var k = 0; k <= numberOfOpposedDice; k++) {
-        var prob = BinomTerm( successRate, numberOfOpposedDice, k )
-        oppositionOutcomes.push([k, prob]);
+    netHits.push(["0", prob]);
+    // One or more net successes
+    for (var i = 1; i <= Math.min(numberOfDice, maxNetHits); i++) {
+        prob = 0.0;
+        for (var j = 0; j <= numberOfDice; j++) {
+            var myProb = BinomTerm( successRate, numberOfDice, j );
+            for (var k = 0; k <= numberOfOpposedDice; k++) {
+                if (j - k >= i) {
+                    var yourProb = BinomTerm( successRate, numberOfOpposedDice, k );
+                    prob = prob + myProb * yourProb;
+                }
+            }
+        }
+        netHits.push([String(i) + "+", prob]);
     }
-    //var netHits = [];
-    //for (var j = 0; j <= numberOfDice; j++) {
-        //for (var k = 0; k <= numberOfOpposedDice; k++) {
-            //var prob = BinomTerm( successRate, numberOfOpposedDice, k )
-            //oppositionOutcomes.push([k, prob]);
-    //}
     var data = {
                 header: ["Outcome", "Probability"],
-                rows: oppositionOutcomes
+                rows: netHits
     };
 
 
