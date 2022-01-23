@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>JavaScript Bar Chart</title>
+        <title>Opposed dice roll outcomes</title>
         <script src="https://cdn.anychart.com/releases/8.0.0/js/anychart-base.min.js"></script>
         <script src="functions.js"></script>
     </head>
@@ -35,6 +35,16 @@
                 chart.container("dicepoolContainer");
                 // set the data
                 ChartUpdate( chart, parseInt(slider1.value), successRate);
+
+                // create another chart
+                var chart2 = anychart.column();
+                chart2.id('netHitsHistogram');
+                chart2.title("Net success results");
+                // Add annotations
+                chart2.labels(true);
+                chart2.container("netHitsContainer");
+                // set the data
+                NetHitsChartUpdate( chart2, parseInt(slider1.value), parseInt(slider2.value), successRate) 
                 });
 
             // Update the current slider value (each time you drag the slider handle)
@@ -45,6 +55,8 @@
                 };
             slider2.oninput = function() {
                 output2.innerHTML = this.value;
+                var netHitsChart = anychart.getChartById('netHitsHistogram');
+                NetHitsChartUpdate( netHitsChart, parseInt(slider1.value), parseInt(this.value), successRate) 
                 };
         </script>
     </body>

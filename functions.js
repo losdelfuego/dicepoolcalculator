@@ -63,3 +63,33 @@ function ChartUpdate( chart, numberOfDice, successRate) {
     chart.data(data);
     chart.draw();
 }
+
+
+function NetHitsChartUpdate( chart, numberOfDice, numberOfOpposedDice, successRate) {
+
+    var outcomes = [];
+    for (var k = 0; k <= numberOfDice; k++) {
+        var prob = BinomTerm( successRate, numberOfDice, k )
+        outcomes.push([k, prob]);
+    }
+    var oppositionOutcomes = [];
+    for (var k = 0; k <= numberOfOpposedDice; k++) {
+        var prob = BinomTerm( successRate, numberOfOpposedDice, k )
+        oppositionOutcomes.push([k, prob]);
+    }
+    //var netHits = [];
+    //for (var j = 0; j <= numberOfDice; j++) {
+        //for (var k = 0; k <= numberOfOpposedDice; k++) {
+            //var prob = BinomTerm( successRate, numberOfOpposedDice, k )
+            //oppositionOutcomes.push([k, prob]);
+    //}
+    var data = {
+                header: ["Outcome", "Probability"],
+                rows: oppositionOutcomes
+    };
+
+
+    // add the data
+    chart.data(data);
+    chart.draw();
+}
