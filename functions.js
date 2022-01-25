@@ -50,7 +50,8 @@ function ChartUpdate( chart, numberOfDice, successRate) {
     var outcomes = [];
     for (var k = 0; k <= numberOfDice; k++) {
         var prob = BinomTerm( successRate, numberOfDice, k )
-        outcomes.push([k, prob]);
+        outcomes.push([prob]);
+        outcomesLabel.push(k);
         console.log(k, prob);
     }
     var data = {
@@ -60,8 +61,13 @@ function ChartUpdate( chart, numberOfDice, successRate) {
 
 
     // add the data
-    chart.data(data);
-    chart.draw();
+    // chart.data(data);
+    // chart.draw();
+    outcomesChart.data.datasets[0].data = outcomes;
+    outcomesChart.update('active');
+    console.log(outcomes);
+
+
 }
 
 
