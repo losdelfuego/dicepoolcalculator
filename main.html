@@ -52,7 +52,7 @@
             data: {
                 labels: outcomesLabel,
                 datasets: [{
-                    label: 'Chance of X Successes',
+                    label: 'Percent Chance of X Successes',
                     data: data,
                     // backgroundColor: function (context) {
                     //     const index = context.dataIndex;
@@ -78,15 +78,15 @@
             data: {
                 labels: netHitsLabel,
                 datasets: [{
-                    label: 'Chance of X Net Hits',
+                    label: 'Percent Chance of X Net Hits',
                     data: data,
                     // backgroundColor: 'green',
                     
                     backgroundColor: function (context) {
                         const index = context.dataIndex;
                         const value = context.dataset.data[index];
-                        return value >= .5 ? 'green' : //if the prob is over half, green
-                            value < .5 && value >= .25 ? 'blue': //if it's less than half but greater than 25%, blue
+                        return value >= 50 ? 'green' : //if the prob is over half, green
+                            value < 50 && value >= 25 ? 'blue': //if it's less than half but greater than 25%, blue
                                'red'; //otherwise red
 
                     },

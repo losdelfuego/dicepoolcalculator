@@ -51,7 +51,7 @@ function ChartUpdate(chart, numberOfDice, successRate) {
     var outcomesLabel = [];
     for ( k = 0; k <= numberOfDice; k++) {
         prob = BinomTerm( successRate, numberOfDice, k )
-        outcomes.push(prob);
+        outcomes.push((prob*100).toFixed(2));
         outcomesLabel.push(k);
     }
 
@@ -88,11 +88,11 @@ function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successR
             for (var k = 0; k <= numberOfOpposedDice; k++) {
                 if (j - k >= i) {
                     var yourProb = BinomTerm( successRate, numberOfOpposedDice, k );
-                    prob = prob + myProb * yourProb;
+                    prob = (prob + myProb * yourProb);
                 }
             }
         }
-        netHits.push(prob);
+        netHits.push((prob * 100).toFixed(2));
         netHitsLabel.push(String(i)-1 + "+");
     }
     
