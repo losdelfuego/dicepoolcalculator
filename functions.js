@@ -45,27 +45,20 @@ function BinomTerm( p, n, k ) {
                     + (n-k) * Math.log(1-p) );
   }
 
-function ChartUpdate( chart, numberOfDice, successRate) {
-
+function ChartUpdate(chart, numberOfDice, successRate) {
+    
     var outcomes = [];
-    for (var k = 0; k <= numberOfDice; k++) {
-        var prob = BinomTerm( successRate, numberOfDice, k )
-        outcomes.push([prob]);
+    var outcomesLabel = [];
+    for ( k = 0; k <= numberOfDice; k++) {
+        prob = BinomTerm( successRate, numberOfDice, k )
+        outcomes.push(prob);
         outcomesLabel.push(k);
-        console.log(k, prob);
     }
-    var data = {
-                header: ["Outcome", "Probability"],
-                rows: outcomes
-    };
 
-
-    // add the data
-    // chart.data(data);
-    // chart.draw();
+    //update and draw the new chart
     outcomesChart.data.datasets[0].data = outcomes;
+    outcomesChart.data.labels = outcomesLabel;
     outcomesChart.update('active');
-    console.log(outcomes);
 
 
 }
@@ -74,6 +67,7 @@ function ChartUpdate( chart, numberOfDice, successRate) {
 function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successRate, maxNetHits) {
 
     var netHits = [];
+    var netHitsLabel = [];
     // No net successes
     var prob = 0.0;
     for (var j = 0; j <= numberOfDice; j++) {
@@ -85,7 +79,7 @@ function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successR
             }
         }
     }
-    netHits.push(["0", prob]);
+    netHits.push(prob);
     // One or more net successes
     for (var i = 1; i <= Math.min(numberOfDice, maxNetHits); i++) {
         prob = 0.0;
@@ -98,15 +92,13 @@ function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successR
                 }
             }
         }
-        netHits.push([String(i) + "+", prob]);
+        netHits.push(prob);
+        netHitsLabel.push(String(i)-1 + "+");
     }
-    var data = {
-                header: ["Outcome", "Probability"],
-                rows: netHits
-    };
+    
+    //update and draw the new chart
+    netHitsChart.data.datasets[0].data = netHits;
+    netHitsChart.data.labels = netHitsLabel;
+    netHitsChart.update('active');
 
-
-    // add the data
-    chart.data(data);
-    chart.draw();
 }
