@@ -31,8 +31,9 @@
         <canvas id="netHitsChart" width="100%" height="20%"></canvas>
     </div>
 
-    <p>Instructions: choose your dicepool and the opposition dicepool. The first chart shows a probability of X successes, and the second chart shows a probability of X net hits vs the opposed dicepool.<br>
-    The bars on the second chart are coded Green for a 50%+ chance, blue for a 25-50% chance, and red for odds less than 25%.</p>
+    <p>Instructions: choose your dicepool and the opposition dicepool.</p>
+    <p>The first chart shows a probability of X successes, and the second chart shows a probability of at least X net hits vs the opposed dicepool.</p>
+    <p>The bars on the second chart are coded <span style="color:green">Green</span> for a 50%+ chance, <span style="color:blue">Blue</span> for a 25-50% chance, and <span style="color:red">Red</span> for odds less than 25%.</p>
     
     <script>
         slider1 = document.getElementById("dicepool");
@@ -66,8 +67,8 @@
 
                     // },
 
-                    borderColor: 'rgba(255,0,0,1)',
-                    borderWidth: 1
+                    borderColor: 'black',
+                    borderWidth: 2
 
                 }]
             },
@@ -94,8 +95,8 @@
 
                     },
 
-                    borderColor: 'rgba(255,0,0,1)',
-                    borderWidth: 1
+                    borderColor: 'black',
+                    borderWidth: 2
 
                 }]
             },
