@@ -45,29 +45,29 @@ function BinomTerm( p, n, k ) {
                     + (n-k) * Math.log(1-p) );
   }
 
-function ChartUpdate( chart, numberOfDice, successRate) {
-
+function ChartUpdate(chart, numberOfDice, successRate) {
+    
     var outcomes = [];
-    for (var k = 0; k <= numberOfDice; k++) {
-        var prob = BinomTerm( successRate, numberOfDice, k )
-        outcomes.push([k, prob]);
-        console.log(k, prob);
+    var outcomesLabel = [];
+    for ( k = 0; k <= numberOfDice; k++) {
+        prob = BinomTerm( successRate, numberOfDice, k )
+        outcomes.push((prob*100).toFixed(2));
+        outcomesLabel.push(k);
     }
-    var data = {
-                header: ["Outcome", "Probability"],
-                rows: outcomes
-    };
+
+    //update and draw the new chart
+    outcomesChart.data.datasets[0].data = outcomes;
+    outcomesChart.data.labels = outcomesLabel;
+    outcomesChart.update('active');
 
 
-    // add the data
-    chart.data(data);
-    chart.draw();
 }
 
 
 function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successRate, maxNetHits) {
 
     var netHits = [];
+    var netHitsLabel = [];
     // No net successes
     var prob = 0.0;
     for (var j = 0; j <= numberOfDice; j++) {
@@ -79,7 +79,8 @@ function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successR
             }
         }
     }
-    netHits.push(["0", prob]);
+    netHits.push((prob * 100).toFixed(2));
+    netHitsLabel.push('0');
     // One or more net successes
     for (var i = 1; i <= Math.min(numberOfDice, maxNetHits); i++) {
         prob = 0.0;
@@ -88,19 +89,17 @@ function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successR
             for (var k = 0; k <= numberOfOpposedDice; k++) {
                 if (j - k >= i) {
                     var yourProb = BinomTerm( successRate, numberOfOpposedDice, k );
-                    prob = prob + myProb * yourProb;
+                    prob = (prob + myProb * yourProb);
                 }
             }
         }
-        netHits.push([String(i) + "+", prob]);
+        netHits.push((prob * 100).toFixed(2));
+        netHitsLabel.push(String(i) + "+");
     }
-    var data = {
-                header: ["Outcome", "Probability"],
-                rows: netHits
-    };
+    
+    //update and draw the new chart
+    netHitsChart.data.datasets[0].data = netHits;
+    netHitsChart.data.labels = netHitsLabel;
+    netHitsChart.update('active');
 
-
-    // add the data
-    chart.data(data);
-    chart.draw();
 }
