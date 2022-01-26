@@ -21,14 +21,14 @@
 	</div>
         <div id="netHitsContainer" style="width: 100%; height: 100%"></div>
         <script>
-            var slider1 = document.getElementById("dicepool");
-            var slider2 = document.getElementById("opposedDicepool");
-            var successRate = 1/3
-            var maxNetHits = 10
+            slider1 = document.getElementById("dicepool");
+            slider2 = document.getElementById("opposedDicepool");
+            successRate = 1/3
+            maxNetHits = 10
             anychart.onDocumentReady(function() {
                 
                 // create the chart
-                var chart = anychart.column();
+                chart = anychart.column();
                 chart.id('outcomesHistogram');
                 chart.title("Dice outcomes");
                 // Add annotations
@@ -38,7 +38,7 @@
                 ChartUpdate( chart, parseInt(slider1.value), successRate);
 
                 // create another chart
-                var chart2 = anychart.column();
+                chart2 = anychart.column();
                 chart2.id('netHitsHistogram');
                 chart2.title("Net success results");
                 // Add annotations
@@ -50,13 +50,13 @@
 
             // Update the current slider value (each time you drag the slider handle)
             slider1.oninput = function() {
-                var outcomesChart = anychart.getChartById('outcomesHistogram');
-                var netHitsChart = anychart.getChartById('netHitsHistogram');
+                outcomesChart = anychart.getChartById('outcomesHistogram');
+                netHitsChart = anychart.getChartById('netHitsHistogram');
                 ChartUpdate( outcomesChart, parseInt(this.value), successRate) 
                 NetHitsChartUpdate( netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits ) 
                 };
             slider2.oninput = function() {
-                var netHitsChart = anychart.getChartById('netHitsHistogram');
+                netHitsChart = anychart.getChartById('netHitsHistogram');
                 NetHitsChartUpdate( netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits ) 
                 };
         </script>
