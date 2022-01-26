@@ -80,7 +80,7 @@ function NetHitsChartUpdate ( chart, numberOfDice, numberOfOpposedDice, successR
         }
     }
     netHits.push((prob * 100).toFixed(2));
-    netHitsLabel.push('0+');
+    netHitsLabel.push('0');
     // One or more net successes
     for (var i = 1; i <= Math.min(numberOfDice, maxNetHits); i++) {
         prob = 0.0;
