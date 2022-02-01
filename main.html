@@ -2,63 +2,148 @@
 <html>
     <head>
         <title>Opposed dice roll outcomes</title>
-        <script src="https://cdn.anychart.com/releases/8.0.0/js/anychart-base.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
         <script src="functions.js"></script>
     </head>
     <body>
-	<p>Dicepool</p>
-        <div id="playerList" class="playerList">
-	    <ul class="player">
-		<li><input id="dicepool" value="10" min="1" max="100" type="number" onclick="this.select()"></li>
-	    </ul>
+    
+    <div id="dicePoolField">
+	    <p>Dicepool: 
+        <input type="button" value="-" class="button-minus" onclick="lessDice()">
+		<input id="dicepool" value="10" min="1" max="100" type="number" onclick="this.select()">
+        <input type="button" value="+" class="button-plus" onclick="moreDice()">
 	</div>
-        <div id="dicepoolContainer" style="width: 100%; height: 100%"></div>
-	<p>Opposed dicepool</p>
-        <div id="playerList" class="playerList">
-	    <ul class="player">
-		    <li><input id="opposedDicepool" value="10" min="0" max="100" type="number" onclick="this.select()"></li>
-	    </ul>
+    
+    <!-- this is where the chart goes -->
+    <div id="dicepoolContainer">
+        <canvas id="dicepoolChart" width="100%" height="20%"></canvas>
+    </div>
+	
+    <div id="oppositionField">
+        <p>Opposed dicepool: 
+        <input type="button" value="-" class="button-minus" onclick="lessOpposition()">
+		<input id="opposedDicepool" value="10" min="0" max="100" type="number" onclick="this.select()">
+        <input type="button" value="+" class="button-plus" onclick="moreOpposition()">
 	</div>
-        <div id="netHitsContainer" style="width: 100%; height: 100%"></div>
-        <script>
-            slider1 = document.getElementById("dicepool");
-            slider2 = document.getElementById("opposedDicepool");
-            successRate = 1/3
-            maxNetHits = 10
-            anychart.onDocumentReady(function() {
-                
-                // create the chart
-                chart = anychart.column();
-                chart.id('outcomesHistogram');
-                chart.title("Dice outcomes");
-                // Add annotations
-                chart.labels(true);
-                chart.container("dicepoolContainer");
-                // set the data
-                ChartUpdate( chart, parseInt(slider1.value), successRate);
 
-                // create another chart
-                chart2 = anychart.column();
-                chart2.id('netHitsHistogram');
-                chart2.title("Net success results");
-                // Add annotations
-                chart2.labels(true);
-                chart2.container("netHitsContainer");
-                // set the data
-                NetHitsChartUpdate( chart2, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits );
-                });
+    <!-- this is where the chart goes -->
+    <div id="netHitsContainer">
+        <canvas id="netHitsChart" width="100%" height="20%"></canvas>
+    </div>
 
-            // Update the current slider value (each time you drag the slider handle)
-            slider1.oninput = function() {
-                outcomesChart = anychart.getChartById('outcomesHistogram');
-                netHitsChart = anychart.getChartById('netHitsHistogram');
-                ChartUpdate( outcomesChart, parseInt(this.value), successRate) 
-                NetHitsChartUpdate( netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits ) 
-                };
-            slider2.oninput = function() {
-                netHitsChart = anychart.getChartById('netHitsHistogram');
-                NetHitsChartUpdate( netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits ) 
-                };
-        </script>
+    <p>Instructions: choose your dicepool and the opposition dicepool.</p>
+    <p>The first chart shows a probability of X successes, and the second chart shows a probability of at least X net hits vs the opposed dicepool.</p>
+    <p>The bars on the second chart are coded <span style="color:green">Green</span> for a 50%+ chance, <span style="color:blue">Blue</span> for a 25-50% chance, and <span style="color:red">Red</span> for odds less than 25%.</p>
+    
+    <script>
+        slider1 = document.getElementById("dicepool");
+        slider2 = document.getElementById("opposedDicepool");
+        successRate = 1/3
+        maxNetHits = 10
+        
+        //these two are chart variables used by chart.js
+        ctx = document.getElementById('dicepoolChart');
+        cty = document.getElementById('netHitsChart');
+         
+        outcomesLabel=[];
+        netHitsLabel=[];
+        data=[];
+        diceNumber = parseInt(slider1.value);
+        forceNumber = parseInt(slider2.value);
+
+        outcomesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: outcomesLabel,
+                datasets: [{
+                    label: 'Percent Chance of X Successes',
+                    data: data,
+                    // backgroundColor: function (context) {
+                    //     const index = context.dataIndex;
+                    //     const value = context.dataset.data[index];
+                    //     return value >= .5 ? 'green' : //if the prob is over half, green
+                    //         value < .5 && value >= .25 ? 'blue' : //if it's less than half but greater than 25%, blue
+                    //             'red'; //otherwise red
+
+                    // },
+
+                    borderColor: 'black',
+                    borderWidth: 2
+
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        })
+
+        netHitsChart = new Chart(cty, {
+            type: 'bar',
+            data: {
+                labels: netHitsLabel,
+                datasets: [{
+                    label: 'Percent Chance of X Net Hits',
+                    data: data,
+                    // backgroundColor: 'green',
+                    
+                    backgroundColor: function (context) {
+                        const index = context.dataIndex;
+                        const value = context.dataset.data[index];
+                        return value >= 50 ? 'green' : //if the prob is over half, green
+                            value < 50 && value >= 25 ? 'blue': //if it's less than half but greater than 25%, blue
+                               'red'; //otherwise red
+
+                    },
+
+                    borderColor: 'black',
+                    borderWidth: 2
+
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        })
+
+        slider1.onchange = function() {
+            ChartUpdate( outcomesChart, parseInt(this.value), successRate) 
+            NetHitsChartUpdate( netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits ) 
+        };
+        slider2.onchange = function() {
+            NetHitsChartUpdate( netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits ) 
+        };
+
+        function moreDice() {
+            slider1.stepUp();
+            ChartUpdate(outcomesChart, parseInt(slider1.value), successRate)
+            NetHitsChartUpdate(netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits)
+        }
+
+        function lessDice() {
+            slider1.stepDown();
+            ChartUpdate(outcomesChart, parseInt(slider1.value), successRate)
+            NetHitsChartUpdate(netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits)
+        }
+
+        function moreOpposition() {
+            slider2.stepUp();
+            NetHitsChartUpdate(netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits)
+        }
+
+        function lessOpposition() {
+            slider2.stepDown();
+            NetHitsChartUpdate(netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits)
+        }
+
+            
+        ChartUpdate( outcomesChart, parseInt(slider1.value), successRate );
+        NetHitsChartUpdate(netHitsChart, parseInt(slider1.value), parseInt(slider2.value), successRate, maxNetHits );
+
+
+
+
+
+
+    </script>
     </body>
 </html>
